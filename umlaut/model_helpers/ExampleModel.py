@@ -26,7 +26,7 @@ if __name__ == "__main__":
     Saves the model to MLflow in an experiment run
     The model can be registered as a new version within the MLflow UI
     """
-    from umlaut.main import Umlaut
+    from umlaut.core import Umlaut
 
     model = Umlaut(model_name="example model")
     model.track_model(ExampleModel())

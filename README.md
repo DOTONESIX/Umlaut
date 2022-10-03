@@ -1,24 +1,6 @@
-LogiSync is the simplest possible ML model deployment product
+# uMLaut
 
-Small data departments are the market. They may have models they want to use/share
-but don't know how to deploy. Simplify it by making any model into an endpoint. The
-user installs the library which is FOSS. 
-
-Important:
-- Transformation tracking
-- Include dataset tracking
-- Associate dataset to model
-
-Deploy:
-The user installs the library which is a wrapper around MLflow. 
-
-How do you simplify the MLflow deployment, or offer managed service?
-Do things that don't scale.
-
-
-# Analytics Layer
-
-The Analytics Layer stores static business logic and provides an interface with MLflow for creating and using models. 
+The uMLaut library 
 
 The layer introduces the concept of `models` which can be any reusable block of code that a team would like to make accessible to a broader audience.
 
@@ -29,34 +11,39 @@ The layer introduces the concept of `models` which can be any reusable block of 
 - Auto-deployed logic that can be queried in an API (roadmap)
 
 ____
-## Analytics Layer Class
+## Umlaut Class
 A Python class to assist with saving and querying business logic.
 
-- `update_model`: Converts a block of business logic into an Analytics Layer compatible `model`
+- `track_model`: Converts a block of business logic into an Umlaut compatible `model`
 - `query_model`: Queries a previously trained `model` and saves audit metadata
 - `track_dataset`: Saves reporting datasets along with the initial query and underlying data that built it (roadmap)
-- `audit_model`: Retrieve the results of a model run for a historic date
-- `audit_dataset`: Retrieve a dataset as it was on a historic date
+- `audit_model (roadmap)`: Retrieve the results of a model run for a historic date
+- `audit_dataset (roadmap)`: Retrieve a dataset as it was on a historic date
 
-### Developing models with Analytics Layer
-Custom `models` can be saved from any repository. To begin, install the private `analytics-layer` library by following this [development doc](https://docs.google.com/document/d/16blA2XrRTAMS-KORyJ2GkLLQUe2zJVBsMK02rcCMIEY/edit#heading=h.fixmy7m9p106). Ensure the code block is in a Python `Class` and follow the example below.
+### Developing models with Umlaut
+Custom `models` can be saved from any repository. Ensure the code block is in a Python `Class` and follow the example below.
 
 ```
-from analytics_layer.core import AnalyticsLayer
+from umlaut.core import Umlaut
 
-class CompanyFuzzyMatching():
-    ...
+class ExampleModel():
+    """Example business logic that can be wrapped into a model.
+       The class _must_ contain a 'predict' method.
+    """
+    def business_logic(self, record: dict) -> bool:
+        if record.get("sales") > 5:
+            return True
+        else:
+            return False
 
-def update_company_fuzzy_matching_model():
-    company_fuzzy_matching = AnalyticsLayer(
-        model=CompanyFuzzyMatching,
-        model_name="Company Fuzzy Matching",
-        s3_folder="company_fuzzy_matching",
-    )
-    company_fuzzy_matching.update_model()
+    def predict(self, model_input: dict) -> bool:
+        return self.business_logic()
 
 if __name__ == "__main__":
-    update_company_fuzzy_matching_model()
+    from umlaut.core import Umlaut
+
+    model = Umlaut(model_name="example model")
+    model.track_model(ExampleModel())
 ```
 
-This will push the latest changes of `CompanyFuzzyMatching()` to MLflow as a new model version. Navigate to the [MLflow UI](http://mlflow-tracking.default.svc.cluster.local:5000/#/) to find the latest push and associate it to the MLflow model.
+This will push the latest changes of `ExampleModel()` to MLflow as a new model version. Navigate to the MLflow Tracking Server to find the latest push and associate it to the MLflow model.
