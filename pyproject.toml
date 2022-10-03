@@ -1,0 +1,27 @@
+[tool.poetry]
+name = "umlaut"
+version = "0.0.1"
+description = "Umlaut is a library for training and querying ML models"
+authors = ["Umlaut Dunkel"]
+readme = "README.md"
+repository = "https://github.com/andrewdunkel/uMLaut"
+keywords = []
+packages = [
+    { include = "umlaut" }
+]
+
+[tool.poetry.dependencies]
+python = ">=3.9.12,<4.0"
+mlflow = "1.28.0"
+
+[tool.poetry.dev-dependencies]
+pre-commit = "^2.15.0"
+black = "^21.11b1"
+flake8 = "^4.0.1"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.black]
+line-length = 88
