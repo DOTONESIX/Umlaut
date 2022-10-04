@@ -1,14 +1,14 @@
 # uMLaut
 
-The uMLaut library 
+The uMLaut library simplifies model deployment and querying. It provides a single
+access point for all of your organizations models and an interface to interact with all of them in the same way. Umlaut `models` can be as extensive as deep learning models or as simple as a reusable code block.
 
-The layer introduces the concept of `models` which can be any reusable block of code that a team would like to make accessible to a broader audience.
-
+- Simple model lifecycle management
 - Easily maintain and access multiple versions of the same model
-- Built in model lifecycle management
-- Built in audit tracking and retrieval
-- Built in UI using `MLflow`
-- Auto-deployed logic that can be queried in an API (roadmap)
+- Quickly share business logic in reusable modules
+- User interface with `MLflow`
+- Audit tracking history (roadmap)
+- Auto-deployed models that can be queried through an API (roadmap)
 
 ____
 ## Umlaut Class
