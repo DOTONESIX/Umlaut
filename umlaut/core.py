@@ -4,6 +4,10 @@ import mlflow
 import pandas as pd
 import json
 from contextlib import suppress
+import datetime as dt
+from dotenv import load_dotenv
+
+load_dotenv()
 
 
 class PyfuncWrapper(mlflow.pyfunc.PythonModel):
@@ -31,49 +35,44 @@ class Umlaut:
 
     def __init__(
         self,
-        model_name: str,
-        run_name: str = "Update",
         folder_name: str = None,
         tracking_server: str = None,
     ):
-        self.ENVIRONMENT = os.environ.get("ENVIRONMENT")
         self.DB_USERNAME = os.environ.get("DB_USERNAME")
         self.DB_PASSWORD = os.environ.get("DB_PASSWORD")
         self.DB_HOSTNAME = os.environ.get("DB_HOSTNAME")
         self.DB_NAME = os.environ.get("DB_NAME")
         self.DB_PORT = os.environ.get("DB_PORT")
-        self.DB_ARTIFACT_TABLE = os.environ.get("DB_ARTIFACT_TABLE")
+        self.UMLAUT_ARTIFACT_TABLE = os.environ.get("UMLAUT_ARTIFACT_TABLE")
 
-        self.model_name = model_name
-        self.run_name = run_name
         if folder_name:
             self.folder_name = folder_name
         else:
-            self.folder_name = str(model_name).replace(" ", "_").strip()
-        if tracking_server:
-            self.tracking_server = tracking_server
-        else:
-            self.tracking_server = os.environ.get("UMLAUT_TRACKING_SERVER") or None
+            self.folder_name = str(dt.datetime.now())
 
-        self.model = None
+        self.artifact_location = None
+        # if tracking_server:
+        #     self.tracking_server = tracking_server
+        # else:
+        #     self.tracking_server = os.environ.get("UMLAUT_TRACKING_SERVER") or None
 
-        if self.tracking_server:
-            mlflow.set_tracking_uri(
-                f"{self.tracking_server}"
-            )
-            self.artifact_location = f"mlflow-artifacts:/{self.folder_name}"
-        else:
-            mlflow.set_tracking_uri(
-                f"postgresql+psycopg2://{self.DB_USERNAME}:{self.DB_PASSWORD}@{self.DB_HOSTNAME}:{self.DB_PORT}/{self.DB_NAME}?"
-                f"options=-csearch_path%3D{self.DB_ARTIFACT_TABLE}"
-            )
-            self.artifact_location = (
-                f"s3://{self.ENVIRONMENT}-ml-artifacts/{self.folder_name}/"
-            )
+        # self.model = None
 
-    def track_model(self, model, code_path: list = None):
-        """
-        Trains a new version of the initiated model and pushes it to MLflow in a new run.
+        # if self.tracking_server:
+        #     mlflow.set_tracking_uri(
+        #         f"{self.tracking_server}"
+        #     )
+        #     self.artifact_location = f"mlflow-artifacts:/{self.folder_name}"
+        # else:
+        mlflow.set_tracking_uri(
+            f"postgresql+psycopg2://{self.DB_USERNAME}:{self.DB_PASSWORD}@{self.DB_HOSTNAME}:{self.DB_PORT}/{self.DB_NAME}"
+        )
+            # self.artifact_location = (
+            #     f"s3://ml-artifacts/{self.folder_name}/"
+            # )
+
+    def track_model(self, model, model_name: str = None, run_name: str = "Update", code_path: list = None):
+        """Trains a new version of the initiated model and pushes it to MLflow in a new run.
         Once pushed, the model can be associated to an existing model in the MLflow UI.
         :param object model: model to be created or updated
         :param list code_path: A list of local filesystem paths to Python file dependencies (or directories containing
@@ -82,11 +81,19 @@ class Umlaut:
         from mlflow.tracking import MlflowClient
 
         self.model = model
+        self.model_name = model_name
+        self.run_name = run_name
+
         mlf_client = MlflowClient()
         experiment = mlf_client.get_experiment_by_name(f"{self.model_name}")
-        experiment_id = experiment.experiment_id or mlf_client.create_experiment(
-            f"{self.model_name}", artifact_location=self.artifact_location
-        )
+        try:
+            experiment_id = experiment.experiment_id or mlf_client.create_experiment(
+                f"{self.model_name}", artifact_location=self.artifact_location
+            )
+        except AttributeError:
+            experiment_id = mlf_client.create_experiment(
+                f"{self.model_name}", artifact_location=self.artifact_location
+            )
 
         with mlflow.start_run(experiment_id=experiment_id, run_name=self.run_name):
             self.model = PyfuncWrapper(self.model)
@@ -109,12 +116,14 @@ class Umlaut:
 
     def query_model(
         self,
-        input_config: dict,
+        model_name: str = "Default",
+        input_config: dict = None,
         result_keys: list = None,
         stage: str = "Production",
         nested_run: bool = False,
     ) -> Any:
         """Queries the registered model.
+        :param str model_name: 
         :param dict input_config: input parameters specific to the model
         :param list result_keys: list of items to be stored in results.txt
         :param str stage: stage of the model to be queried
