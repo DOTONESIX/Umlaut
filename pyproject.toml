@@ -5,7 +5,7 @@ description = "Umlaut simplifies deploying data science models"
 authors = ["Andrew Dunkel <andrew.dunkel1@gmail.com>"]
 readme = "README.md"
 repository = "https://github.com/andrewdunkel/uMLaut"
-keywords = []
+keywords = ["mlops", "mlflow", "devops"]
 packages = [
     { include = "umlaut" }
 ]
