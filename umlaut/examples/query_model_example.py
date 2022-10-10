@@ -9,8 +9,9 @@ if __name__ == "__main__":
     from core import Umlaut
 
     umlaut = Umlaut()
-    umlaut.query_model(
-        model_name="Sales Target",
-        run_name="Update",
-        # code_path=
+    result = umlaut.query_model(
+        model_name="Quarterly Revenue",
+        input_config={"revenue": 3},
+        stage="Staging",
     )
+    print(f"Revenue will{'' if result else ' not'} exceed target")

@@ -1,14 +1,14 @@
 class ExampleModel():
     """Example business logic that can be wrapped into a model.
        The class _must_ contain a 'predict' method."""
-    def business_logic(self, record: dict) -> bool:
-        if record.get("revenue") > 5:
+    def business_logic(self, revenue: int) -> bool:
+        if revenue > 5:
             return True
         else:
             return False
 
     def predict(self, model_input: dict) -> bool:
-        return self.business_logic(model_input)
+        return self.business_logic(revenue=model_input.get("revenue"))
 
 
 if __name__ == "__main__":
@@ -23,7 +23,7 @@ if __name__ == "__main__":
 
     umlaut = Umlaut()
     umlaut.track_model(
-        model=ExampleModel,
+        model=ExampleModel(),
         model_name="Quarterly Revenue",
         run_name="Update",
         # code_path=

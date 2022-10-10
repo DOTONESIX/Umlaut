@@ -135,14 +135,13 @@ class Umlaut:
 
         mlf_client = MlflowClient()
         experiment_id = mlf_client.get_experiment_by_name(
-            f"{self.model_name}"
+            f"{model_name}"
         ).experiment_id
-        self.model = mlflow.pyfunc.load_model(f"models:/{self.model_name}/{stage}")
-
+        self.model = mlflow.pyfunc.load_model(f"models:/{model_name}/{stage}")
         with mlflow.start_run(
             experiment_id=experiment_id, run_name="Query", nested=nested_run
         ):
-            result = self.model.predict(input_config)
+            result = self.model.predict(data=input_config)
 
             mlflow.log_params(
                 {
