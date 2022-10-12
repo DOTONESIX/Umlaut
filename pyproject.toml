@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "umlaut"
-version = "0.0.2"
+version = "0.0.3"
 description = "Umlaut simplifies deploying data science models"
 authors = ["Andrew Dunkel <andrew.dunkel1@gmail.com>"]
 readme = "README.md"

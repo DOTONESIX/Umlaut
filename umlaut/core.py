@@ -5,9 +5,6 @@ import pandas as pd
 import json
 from contextlib import suppress
 import datetime as dt
-from dotenv import load_dotenv
-
-load_dotenv()
 
 
 class PyfuncWrapper(mlflow.pyfunc.PythonModel):
