@@ -1,22 +1,36 @@
 # uMLaut
 
-The uMLaut library simplifies model deployment and querying. It provides a single
-access point for all of your organizations models and an interface to interact with them. Umlaut `models` can be as extensive as deep learning models or as simple as a reusable code block.
+The uMLaut library simplifies data science model deployment and querying. It provides a single access point for all your models and an interface to interact with them. uMLaut models can be as extensive as deep learning models or as simple as a reusable code block.
 
-uMLaut offers...
-- simple model lifecycle management
-- easy model maintenance
+uMLaut offers
+- simple commands to track and query models
+- history of all model query inputs and results
+- model lifecycle management
 - access to multiple versions of the same model
-- business logic sharing
 - a user interface with `MLflow`
-- audit tracking history (roadmap)
+- model audit tracking history (roadmap)
 - auto-deployed models that can be queried through an API (roadmap)
 
-____
-## Umlaut Class
-A Python class to assist with saving and querying business logic.
+## MLflow Setup
+[MLflow](https://bit.ly/3eHJsx3) is a powerful machine learning library created by Databricks for data science teams. It offers an extensive API for tracking and querying models, but the learning curve can be a deterrent for small teams without dedicated data scientists. uMLaut strips away much of the complexity of MLflow while maintaining the immense value of tracking and querying your models in a single location. 
 
-- `track_model`: Converts a data science model or block of business logic into an uMLaut compatible `model`
+MLflow has two requirements:
+1) A model artifact storage location
+- This can be a local directory or a cloud storage URI. More info in the MLflow [docs](https://mlflow.org/docs/latest/tracking.html#artifact-stores).
+2) A model registry
+- The model registry is where model changes and query data are stored. More info in the MLflow [docs](https://mlflow.org/docs/latest/tracking.html#backend-stores).
+
+An `mlflow server` must be running in order to work with uMLaut. The command to start an MLflow server with local artifact storage and a Postgres model registry is as follows:
+
+`mlflow server --backend-store-uri postgresql+psycopg2://admin:password@localhost:5432/database --default-artifact-root "mlruns/"`
+
+Once the server is running you can navigate to the MLflow UI and begin interacting with models.
+
+____
+## Core Functionality
+uMLaut offers a simple Python class to assist with saving and querying business logic in MLflow.
+
+- `track_model`: Converts a data science model or block of business logic into an MLflow compatible `model`
 - `query_model`: Queries a previously trained `model` and saves audit metadata
 - `track_dataset (roadmap)`: Saves reporting datasets along with the initial query and underlying data that built it (roadmap)
 - `audit_model (roadmap)`: Retrieve the results of a model run for a historic date
@@ -53,7 +67,7 @@ if __name__ == "__main__":
     )
 ```
 
-This will push the latest changes of `ExampleModel()` to MLflow as a new model version. Navigate to the MLflow Tracking Server to find the latest push and associate it to the MLflow model.
+This will push the latest changes of `ExampleModel()` to MLflow as a new model version. Navigate to the MLflow server where you can find details for the example "Quarterly Revenue" model.
 
 
 ### Querying models with Umlaut
@@ -71,4 +85,4 @@ result = umlaut.query_model(
 print(f"Revenue will{'' if result else ' not'} exceed target")
 ```
 
-If we query the simple `Quarterly Revenue` example model with `revenue = 3`, the model will return `False` as the revenue does not exceed the target of 5.
+If we query the simple `Quarterly Revenue` example model with `revenue = 3`, the model will return `False` as the revenue does not exceed the target of 5. The call to the model will be tracked in MLflow with model inputs and results.
