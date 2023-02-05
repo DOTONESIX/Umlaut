@@ -32,9 +32,7 @@ uMLaut offers a simple Python class to assist with saving and querying business 
 
 - `track_model`: Converts a data science model or block of business logic into an MLflow compatible `model`
 - `query_model`: Queries a previously trained `model` and saves audit metadata
-- `track_dataset (roadmap)`: Saves reporting datasets along with the initial query and underlying data that built it (roadmap)
 - `audit_model (roadmap)`: Retrieve the results of a model run for a historic date
-- `audit_dataset (roadmap)`: Retrieve a dataset as it was on a historic date
 
 ### Deploying models with Umlaut
 Custom data science models or business logic can be deployed simply by running `umlaut.track_model()`. Ensure the model code block is in a Python `Class` and follow the example below.
