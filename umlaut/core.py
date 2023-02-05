@@ -1,10 +1,11 @@
+import datetime as dt
+import json
 import os
+from contextlib import suppress
 from typing import Any
+
 import mlflow
 import pandas as pd
-import json
-from contextlib import suppress
-import datetime as dt
 
 
 class PyfuncWrapper(mlflow.pyfunc.PythonModel):
@@ -23,8 +24,19 @@ class PyfuncWrapper(mlflow.pyfunc.PythonModel):
             self.figures = None
 
     def predict(self, context, model_input: dict):
-        """The wrapped model class must have a `predict` method which returns a dictionary"""
+        """The wrapped model class must have a either a `predict`,
+        `run`, or `query` method which returns a dictionary"""
         return self.model.predict(model_input)
+
+    def run(self, context, model_input: dict):
+        """The wrapped model class must have a either a `predict`,
+        `run`, or `query` method which returns a dictionary"""
+        return self.model.run(model_input)
+
+    def query(self, context, model_input: dict):
+        """The wrapped model class must have a either a `predict`,
+        `run`, or `query` method which returns a dictionary"""
+        return self.model.query(model_input)
 
 
 class Umlaut:
@@ -35,18 +47,15 @@ class Umlaut:
         folder_name: str = None,
         tracking_server: str = None,
     ):
+        super().__init__()
         self.DB_USERNAME = os.environ.get("DB_USERNAME")
         self.DB_PASSWORD = os.environ.get("DB_PASSWORD")
         self.DB_HOSTNAME = os.environ.get("DB_HOSTNAME")
         self.DB_NAME = os.environ.get("DB_NAME")
         self.DB_PORT = os.environ.get("DB_PORT")
-        self.UMLAUT_ARTIFACT_TABLE = os.environ.get("UMLAUT_ARTIFACT_TABLE")
+        # self.UMLAUT_ARTIFACT_TABLE = os.environ.get("UMLAUT_ARTIFACT_TABLE")
 
-        if folder_name:
-            self.folder_name = folder_name
-        else:
-            self.folder_name = str(dt.datetime.now())
-
+        self.folder_name = folder_name or str(dt.datetime.now())
         self.artifact_location = None
         # if tracking_server:
         #     self.tracking_server = tracking_server
@@ -128,6 +137,7 @@ class Umlaut:
         :return Any: the result from the model with varying type {dict, list, tuple, or pd.Dataframe}
         """
         import datetime as dt
+
         from mlflow.tracking import MlflowClient
 
         mlf_client = MlflowClient()
@@ -197,8 +207,9 @@ class Umlaut:
         :param dict custom_params: log a dictionary of custom params {"param_name": value}
         :param dict custom_metrics: log a dictionary of custom metrics {"metric_name": value}
         """
-        from mlflow.tracking import MlflowClient
         import datetime as dt
+
+        from mlflow.tracking import MlflowClient
 
         mlf_client = MlflowClient()
         experiment = mlf_client.get_experiment_by_name(f"{self.model_name}")
