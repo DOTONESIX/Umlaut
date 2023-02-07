@@ -44,10 +44,7 @@ class ExampleModel():
     The class _must_ contain a 'predict' method.
     """
     def business_logic(self, revenue: int) -> bool:
-        if revenue > 5:
-            return True
-        else:
-            return False
+        return revenue > 5
 
     def predict(self, model_input: dict) -> bool:
         return self.business_logic(revenue=model_input.get("revenue"))
@@ -55,10 +52,9 @@ class ExampleModel():
 
 if __name__ == "__main__":
     """Saves the model to MLflow in an experiment run"""
-    from core import Umlaut
+    from umlaut import Umlaut
 
-    umlaut = Umlaut()
-    umlaut.track_model(
+    Umlaut.track_model(
         model=ExampleModel(),
         model_name="Quarterly Revenue",
         run_name="Update",
@@ -72,10 +68,9 @@ This will push the latest changes of `ExampleModel()` to MLflow as a new model v
 Once a model is deployed in MLflow with `umlaut.track_model()`, it can be queried by calling `umlaut.query_model()`.
 
 ```
-from core import Umlaut
+from umlaut import Umlaut
 
-umlaut = Umlaut()
-result = umlaut.query_model(
+result = Umlaut.query_model(
     model_name="Quarterly Revenue",
     input_config={"revenue": 3},
     stage="Staging",

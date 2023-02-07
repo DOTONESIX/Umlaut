@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "umlaut"
-version = "0.1.0"
-description = "Umlaut simplifies deploying data science models"
+version = "0.2.0"
+description = "uMLaut simplifies deploying data science models"
 authors = ["Andrew Dunkel <andrew.dunkel1@gmail.com>"]
 readme = "README.md"
 repository = "https://github.com/andrewdunkel/uMLaut"
