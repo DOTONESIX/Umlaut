@@ -22,5 +22,4 @@ if __name__ == "__main__":
         model=ExampleModel(),
         model_name="Quarterly Revenue",
         run_name="Update",
-        # code_path=
     )
