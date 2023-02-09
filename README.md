@@ -2,7 +2,7 @@
 
 The uMLaut library simplifies data science model deployment and querying. It provides a single access point for all your models and an interface to interact with them. uMLaut models can be as extensive as deep learning models or as simple as a reusable code block.
 
-uMLaut offers
+### uMLaut offers
 - simple commands to track and query models
 - history of all model query inputs and results
 - model lifecycle management
@@ -11,6 +11,9 @@ uMLaut offers
 - model audit tracking history (roadmap)
 - auto-deployed models that can be queried through an API (roadmap)
 
+### Installing uMLaut
+`pip install umlaut`
+___
 ## MLflow Setup
 [MLflow](https://bit.ly/3eHJsx3) is a powerful machine learning library created by Databricks for data science teams. It offers an extensive API for tracking and querying models, but the learning curve can be a deterrent for small teams without dedicated data scientists. uMLaut strips away much of the complexity of MLflow while maintaining the immense value of tracking and querying your models in a single location. 
 
