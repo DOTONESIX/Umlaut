@@ -1,5 +1,4 @@
 import datetime as dt
-import json
 import os
 from contextlib import suppress
 from typing import Any
@@ -53,36 +52,21 @@ class Umlaut:
         self.DB_HOSTNAME = os.environ.get("DB_HOSTNAME")
         self.DB_NAME = os.environ.get("DB_NAME")
         self.DB_PORT = os.environ.get("DB_PORT")
-        # self.UMLAUT_ARTIFACT_TABLE = os.environ.get("UMLAUT_ARTIFACT_TABLE")
 
         self.folder_name = folder_name or str(dt.datetime.now())
         self.artifact_location = None
-        # if tracking_server:
-        #     self.tracking_server = tracking_server
-        # else:
-        #     self.tracking_server = os.environ.get("UMLAUT_TRACKING_SERVER") or None
 
-        # self.model = None
-
-        # if self.tracking_server:
-        #     mlflow.set_tracking_uri(
-        #         f"{self.tracking_server}"
-        #     )
-        #     self.artifact_location = f"mlflow-artifacts:/{self.folder_name}"
-        # else:
         mlflow.set_tracking_uri(
             f"postgresql+psycopg2://{self.DB_USERNAME}:{self.DB_PASSWORD}@{self.DB_HOSTNAME}:{self.DB_PORT}/{self.DB_NAME}"
         )
-            # self.artifact_location = (
-            #     f"s3://ml-artifacts/{self.folder_name}/"
-            # )
 
     def track_model(self, model, model_name: str = None, run_name: str = "Update", code_path: list = None):
-        """Trains a new version of the initiated model and pushes it to MLflow in a new run.
+        """
+        Trains a new version of the initiated model and pushes it to MLflow in a new run.
         Once pushed, the model can be associated to an existing model in the MLflow UI.
         :param object model: model to be created or updated
-        :param list code_path: A list of local filesystem paths to Python file dependencies (or directories containing
-                        file dependencies). These files are prepended to the system path before the model is loaded.
+        :param list code_path: A list of local filesystem paths to Python file dependencies (or directories containing 
+                               file dependencies). These files are prepended to the system path before the model is loaded.
         """
         from mlflow.tracking import MlflowClient
 
