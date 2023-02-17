@@ -1,9 +1,9 @@
-# uMLaut
+# Umlaut
 
-The uMLaut library simplifies data science model deployment and querying. It provides a single access point for all your models and an interface to interact with them. uMLaut models can be as extensive as deep learning models or as simple as a reusable code block.
+Umlaut simplifies operational analytics for data teams. Centralize critical business logic and track all uses of that logic in a single location. Umlaut is built on top of [MLflow](https://bit.ly/3eHJsx3) and offers a simple Python class to assist with tracking and running models. Umlaut is designed to be used by data teams of all sizes and is a great tool for small teams without dedicated data scientists.
 
-### uMLaut offers
-- simple commands to track and query models
+### Umlaut offers
+- simple commands to track and run models
 - history of all model query inputs and results
 - model lifecycle management
 - access to multiple versions of the same model
@@ -11,11 +11,11 @@ The uMLaut library simplifies data science model deployment and querying. It pro
 - model audit tracking history (roadmap)
 - auto-deployed models that can be queried through an API (roadmap)
 
-### Installing uMLaut
+### Installing Umlaut
 `pip install umlaut`
 ___
 ## MLflow Setup
-[MLflow](https://bit.ly/3eHJsx3) is a powerful machine learning library created by Databricks for data science teams. It offers an extensive API for tracking and querying models, but the learning curve can be a deterrent for small teams without dedicated data scientists. uMLaut strips away much of the complexity of MLflow while maintaining the immense value of tracking and querying your models in a single location. 
+[MLflow](https://bit.ly/3eHJsx3) is a powerful machine learning library created by Databricks for data science teams. It offers an extensive API for tracking and querying models, but the learning curve can be a deterrent for small teams without dedicated data scientists. Umlaut strips away much of the complexity of MLflow while maintaining the immense value of tracking and running your models in a single location. 
 
 MLflow has two requirements:
 1) A model artifact storage location
@@ -23,7 +23,7 @@ MLflow has two requirements:
 2) A model registry
 - The model registry is where model changes and query data are stored. More info in the MLflow [docs](https://mlflow.org/docs/latest/tracking.html#backend-stores).
 
-An `mlflow server` must be running in order to work with uMLaut. The command to start an MLflow server with local artifact storage and a Postgres model registry is as follows:
+An `mlflow server` must be running in order to work with Umlaut. The command to start an MLflow server with local artifact storage and a Postgres model registry is as follows:
 
 `mlflow server --backend-store-uri postgresql+psycopg2://admin:password@localhost:5432/database --default-artifact-root "mlruns/"`
 
@@ -31,25 +31,24 @@ Once the server is running you can navigate to the MLflow UI and begin interacti
 
 ____
 ## Core Functionality
-uMLaut offers a simple Python class to assist with saving and querying business logic in MLflow.
+Umlaut offers a simple Python class to assist with saving and running business logic in MLflow. The class has two methods:
 
 - `track_model`: Converts a data science model or block of business logic into an MLflow compatible `model`
-- `query_model`: Queries a previously trained `model` and saves audit metadata
-- `audit_model (roadmap)`: Retrieve the results of a model run for a historic date
+- `run_model`: Runs a previously trained `model` and saves audit metadata
 
 ### Deploying models with Umlaut
-Custom data science models or business logic can be deployed simply by running `umlaut.track_model()`. Ensure the model code block is in a Python `Class` and follow the example below.
+Custom `models` can be deployed simply by running `track_model()`. Ensure that the model code block is in a Python `Class` and follow the example below.
 
 ```
 class ExampleModel():
-    """
-    Example business logic that can be wrapped into a model.
-    The class _must_ contain a 'predict' method.
-    """
+    """Example business logic that can be wrapped into a model.
+       The class must contain a 'run' method with the input config
+       mapped to the corresponding model parameters."""
+
     def business_logic(self, revenue: int) -> bool:
         return revenue > 5
 
-    def predict(self, model_input: dict) -> bool:
+    def run(self, model_input: dict) -> bool:
         return self.business_logic(revenue=model_input.get("revenue"))
 
 
@@ -57,9 +56,9 @@ if __name__ == "__main__":
     """Saves the model to MLflow in an experiment run"""
     from umlaut import Umlaut
 
-    Umlaut.track_model(
+    Umlaut().track_model(
         model=ExampleModel(),
-        model_name="Quarterly Revenue",
+        model_name="Revenue Forecast",
         run_name="Update",
     )
 ```
@@ -68,17 +67,17 @@ This will push the latest changes of `ExampleModel()` to MLflow as a new model v
 
 
 ### Querying models with Umlaut
-Once a model is deployed in MLflow with `umlaut.track_model()`, it can be queried by calling `umlaut.query_model()`.
+Once a model is deployed in MLflow with `track_model()`, it can be queried by calling `run_model()`.
 
 ```
 from umlaut import Umlaut
 
-result = Umlaut.query_model(
-    model_name="Quarterly Revenue",
+result = Umlaut().run_model(
+    model_name="Revenue Forecast",
     input_config={"revenue": 3},
     stage="Staging",
 )
 print(f"Revenue will{'' if result else ' not'} exceed target")
 ```
 
-If we query the simple `Quarterly Revenue` example model with `revenue = 3`, the model will return `False` as the revenue does not exceed the target of 5. The call to the model will be tracked in MLflow with model inputs and results.
+Running the simple `Revenue Forecast` model with `revenue = 3` will return `False` as the revenue does not exceed the target of 5. The call to the model will be tracked in MLflow with model inputs and results.
