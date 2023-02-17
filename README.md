@@ -1,6 +1,6 @@
 # Umlaut
 
-Umlaut simplifies operational analytics for data teams. Centralize critical business logic and track all uses of that logic in a single location. Umlaut is built on top of [MLflow](https://bit.ly/3eHJsx3) and offers a simple Python class to assist with tracking and running models. Umlaut is designed to be used by data teams of all sizes and is a great tool for small teams without dedicated data scientists.
+Umlaut simplifies model deployment and operational analytics for data teams. Centralize critical business logic and track all uses of that logic in a single location. Umlaut is built on top of [MLflow](https://bit.ly/3eHJsx3) and offers a simple Python class to assist with tracking and running models. Umlaut is designed to be used by data teams of all sizes and is a great tool for small teams without dedicated data scientists.
 
 ### Umlaut offers
 - simple commands to track and run models
