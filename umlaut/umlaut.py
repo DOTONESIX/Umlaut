@@ -14,28 +14,16 @@ class PyfuncWrapper(mlflow.pyfunc.PythonModel):
         """Map variables from model to wrapper
         :model class: The class object of the model to be wrapped and saved in MLflow
         :figures dict: A dictionary of {'<filename>': Plotly graph object} to be logged
-        for model performance visualization
-        """
+        for model performance visualization"""
         self.model = model
         try:
             self.figures: dict = model.figures
         except Exception:
             self.figures = None
 
-    def predict(self, context, model_input: dict):
-        """The wrapped model class must have a either a `predict`,
-        `run`, or `query` method which returns a dictionary"""
-        return self.model.predict(model_input)
-
     def run(self, context, model_input: dict):
-        """The wrapped model class must have a either a `predict`,
-        `run`, or `query` method which returns a dictionary"""
+        """The wrapped model class must have a `run` method which returns a dictionary"""
         return self.model.run(model_input)
-
-    def query(self, context, model_input: dict):
-        """The wrapped model class must have a either a `predict`,
-        `run`, or `query` method which returns a dictionary"""
-        return self.model.query(model_input)
 
 
 class Umlaut:
@@ -60,12 +48,17 @@ class Umlaut:
             f"postgresql+psycopg2://{self.DB_USERNAME}:{self.DB_PASSWORD}@{self.DB_HOSTNAME}:{self.DB_PORT}/{self.DB_NAME}"
         )
 
-    def track_model(self, model, model_name: str = None, run_name: str = "Update", code_path: list = None):
+    def track_model(
+        self,
+        model,
+        model_name: str = None,
+        run_name: str = "Update",
+        code_path: list = None,
+    ):
         """
-        Trains a new version of the initiated model and pushes it to MLflow in a new run.
-        Once pushed, the model can be associated to an existing model in the MLflow UI.
+        Tracks a new version of the initiated model and pushes it to MLflow.
         :param object model: model to be created or updated
-        :param list code_path: A list of local filesystem paths to Python file dependencies (or directories containing 
+        :param list code_path: A list of local filesystem paths to Python file dependencies (or directories containing
                                file dependencies). These files are prepended to the system path before the model is loaded.
         """
         from mlflow.tracking import MlflowClient
@@ -104,7 +97,7 @@ class Umlaut:
                         figure = self.model.figures.get(figure_name)
                         mlflow.log_figure(figure, figure_name)
 
-    def query_model(
+    def run_model(
         self,
         model_name: str = "Default",
         input_config: dict = None,
@@ -112,8 +105,8 @@ class Umlaut:
         stage: str = "Production",
         nested_run: bool = False,
     ) -> Any:
-        """Queries the registered model.
-        :param str model_name: 
+        """Runs the registered model with specified inputs.
+        :param str model_name: the saved name of the model
         :param dict input_config: input parameters specific to the model
         :param list result_keys: list of items to be stored in results.txt
         :param str stage: stage of the model to be queried
@@ -125,14 +118,12 @@ class Umlaut:
         from mlflow.tracking import MlflowClient
 
         mlf_client = MlflowClient()
-        experiment_id = mlf_client.get_experiment_by_name(
-            f"{model_name}"
-        ).experiment_id
+        experiment_id = mlf_client.get_experiment_by_name(f"{model_name}").experiment_id
         self.model = mlflow.pyfunc.load_model(f"models:/{model_name}/{stage}")
         with mlflow.start_run(
-            experiment_id=experiment_id, run_name="Query", nested=nested_run
+            experiment_id=experiment_id, run_name="Run", nested=nested_run
         ):
-            result = self.model.predict(data=input_config)
+            result = self.model.run(data=input_config)
 
             mlflow.log_params(
                 {
