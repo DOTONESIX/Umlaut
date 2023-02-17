@@ -81,3 +81,13 @@ print(f"Revenue will{'' if result else ' not'} exceed target")
 ```
 
 Running the simple `Revenue Forecast` model with `revenue = 3` will return `False` as the revenue does not exceed the target of 5. The call to the model will be tracked in MLflow with model inputs and results.
+
+____
+## User Interface
+`MLflow` provides a useful interface for interacting with models and visualizing their performance.
+
+#### Deploy a `staging` and `production` version of the same model for testing changes before promoting.
+<img width="1423" alt="image" src="https://user-images.githubusercontent.com/44371073/219545008-79b5f5bd-78be-4acd-98bb-4775061bdd33.png">
+
+#### Track all model run inputs and outputs.
+<img width="1423" alt="image" src="https://user-images.githubusercontent.com/44371073/219547948-3c2146fd-ab87-4844-9b74-2d608c439724.png">
