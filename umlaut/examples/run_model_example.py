@@ -1,5 +1,5 @@
 if __name__ == "__main__":
-    """Saves the model to MLflow in an experiment run"""
+    """Pulls the model from MLflow and runs it with input params"""
     import os
     import sys
 
@@ -8,8 +8,8 @@ if __name__ == "__main__":
 
     from umlaut import Umlaut
 
-    result = Umlaut.query_model(
-        model_name="Quarterly Revenue",
+    result = Umlaut().run_model(
+        model_name="Revenue Forecast",
         input_config={"revenue": 3},
         stage="Staging",
     )
