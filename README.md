@@ -4,7 +4,7 @@ Umlaut simplifies operational analytics for data teams. Centralize critical busi
 
 ### Umlaut offers
 - simple commands to track and run models
-- history of all model query inputs and results
+- history of all inputs and results for model runs
 - model lifecycle management
 - access to multiple versions of the same model
 - a user interface with `MLflow`
@@ -15,13 +15,13 @@ Umlaut simplifies operational analytics for data teams. Centralize critical busi
 `pip install umlaut`
 ___
 ## MLflow Setup
-[MLflow](https://bit.ly/3eHJsx3) is a powerful machine learning library created by Databricks for data science teams. It offers an extensive API for tracking and querying models, but the learning curve can be a deterrent for small teams without dedicated data scientists. Umlaut strips away much of the complexity of MLflow while maintaining the immense value of tracking and running your models in a single location. 
+[MLflow](https://bit.ly/3eHJsx3) is a powerful machine learning library created by Databricks for data science teams. It offers an extensive API for tracking and running models, but the learning curve can be a deterrent for small teams without dedicated data scientists. Umlaut strips away much of the complexity of MLflow while maintaining the immense value of tracking and running your models in a single location. 
 
 MLflow has two requirements:
 1) A model artifact storage location
 - This can be a local directory or a cloud storage URI. More info in the MLflow [docs](https://mlflow.org/docs/latest/tracking.html#artifact-stores).
 2) A model registry
-- The model registry is where model changes and query data are stored. More info in the MLflow [docs](https://mlflow.org/docs/latest/tracking.html#backend-stores).
+- The model registry is where model changes and run data are stored. More info in the MLflow [docs](https://mlflow.org/docs/latest/tracking.html#backend-stores).
 
 An `mlflow server` must be running in order to work with Umlaut. The command to start an MLflow server with local artifact storage and a Postgres model registry is as follows:
 
@@ -66,8 +66,8 @@ if __name__ == "__main__":
 This will push the latest changes of `ExampleModel()` to MLflow as a new model version. Navigate to the MLflow server where you can find details for the example "Quarterly Revenue" model.
 
 
-### Querying models with Umlaut
-Once a model is deployed in MLflow with `track_model()`, it can be queried by calling `run_model()`.
+### Running models with Umlaut
+Once a model is deployed in MLflow with `track_model()`, it can be run by calling `run_model()`.
 
 ```
 from umlaut import Umlaut

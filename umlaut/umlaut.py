@@ -21,13 +21,13 @@ class PyfuncWrapper(mlflow.pyfunc.PythonModel):
         except Exception:
             self.figures = None
 
-    def run(self, context, model_input: dict):
+    def predict(self, context, model_input: dict):
         """The wrapped model class must have a `run` method which returns a dictionary"""
         return self.model.run(model_input)
 
 
 class Umlaut:
-    """A class for abstracting training and querying models in MLflow"""
+    """A class for abstracting training and running models in MLflow"""
 
     def __init__(
         self,
@@ -52,7 +52,7 @@ class Umlaut:
         self,
         model,
         model_name: str = None,
-        run_name: str = "Update",
+        run_name: str = "Track",
         code_path: list = None,
     ):
         """
@@ -121,9 +121,9 @@ class Umlaut:
         experiment_id = mlf_client.get_experiment_by_name(f"{model_name}").experiment_id
         self.model = mlflow.pyfunc.load_model(f"models:/{model_name}/{stage}")
         with mlflow.start_run(
-            experiment_id=experiment_id, run_name="Run", nested=nested_run
-        ):
-            result = self.model.run(data=input_config)
+                experiment_id=experiment_id, run_name="Run", nested=nested_run
+            ):
+            result = self.model.predict(data=input_config)
 
             mlflow.log_params(
                 {
@@ -134,6 +134,11 @@ class Umlaut:
                     "model_created": str(self.model.metadata.utc_time_created),
                 }
             )
+            with suppress():
+                if isinstance(result, bool):
+                    mlflow.log_metric(key="result", value=1 if result else 0)
+                elif isinstance(result, (int, float)):
+                    mlflow.log_metric(key="result", value=result)
 
             with suppress(TypeError):
                 if result_keys:
@@ -144,7 +149,7 @@ class Umlaut:
                 log_result: dict = {}
                 if isinstance(result, list):
                     log_result = {"result": result}
-                elif isinstance(result, dict):
+                elif isinstance(result, (dict, bool)):
                     log_result = result
                 elif isinstance(result, tuple):
                     log_result = {y: x for x, y in result}
