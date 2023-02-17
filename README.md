@@ -59,7 +59,6 @@ if __name__ == "__main__":
     Umlaut().track_model(
         model=ExampleModel(),
         model_name="Revenue Forecast",
-        run_name="Update",
     )
 ```
 
