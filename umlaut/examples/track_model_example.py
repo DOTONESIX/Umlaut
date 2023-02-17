@@ -3,7 +3,8 @@ class ExampleModel():
        The class must contain a 'run' method with the input config
        mapped to the corresponding model parameters."""
     def business_logic(self, revenue: int) -> bool:
-        return revenue > 5
+        target = 5
+        return revenue > target
 
     def run(self, model_input: dict) -> bool:
         return self.business_logic(revenue=model_input.get("revenue"))
@@ -22,5 +23,5 @@ if __name__ == "__main__":
     Umlaut().track_model(
         model=ExampleModel(),
         model_name="Revenue Forecast",
-        run_name="Update",
+        run_name="Track",
     )
