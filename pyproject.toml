@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "umlaut"
-version = "0.3.3"
-description = "Umlaut simplifies model deployment and operational analytics for data teams"
+version = "0.3.4"
+description = "A simpler way to work with MLflow"
 authors = ["DOTONESIX <contact@dotonesix.com>"]
 readme = "README.md"
 repository = "https://github.com/DOTONESIX/Umlaut"
