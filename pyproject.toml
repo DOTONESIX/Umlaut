@@ -1,10 +1,10 @@
 [tool.poetry]
 name = "umlaut"
-version = "0.3.1"
+version = "0.3.2"
 description = "Umlaut simplifies model deployment and operational analytics for data teams"
-authors = ["Andrew Dunkel <andrew.dunkel1@gmail.com>"]
+authors = ["DOTONESIX <contact@dotonesix.com>"]
 readme = "README.md"
-repository = "https://github.com/andrewdunkel/uMLaut"
+repository = "https://github.com/DOTONESIX/Umlaut"
 keywords = ["mlops", "mlflow", "devops"]
 packages = [
     { include = "umlaut" }
