@@ -1,6 +1,12 @@
 # Umlaut
 
-Umlaut simplifies model deployment and operational analytics for data teams. Centralize critical business logic and track all uses of that logic in a single location. Umlaut is built on top of [MLflow](https://bit.ly/3eHJsx3) and offers a simple Python class to assist with tracking and running models. Umlaut is designed to be used by data teams of all sizes and is a great tool for small teams without dedicated data scientists.
+A simpler way to work with MLflow. Umlaut simplifies model deployment and operational analytics for data teams. Centralize critical business logic and track all uses in a single location. Umlaut is built on top of [MLflow](https://bit.ly/3eHJsx3) and offers a simple Python class to assist with tracking and running models. Umlaut is designed to be used by data teams of all sizes and is a great tool for small teams without dedicated data scientists.
+
+Umlaut provides a simple Python class to assist with saving and running models in MLflow. The class has two methods:
+
+- `track_model`: Converts a data science model or block of business logic into an MLflow compatible `model`
+- `run_model`: Runs a previously trained `model` and saves audit metadata
+
 
 ### Umlaut offers
 - simple commands to track and run models
@@ -8,11 +14,12 @@ Umlaut simplifies model deployment and operational analytics for data teams. Cen
 - model lifecycle management
 - access to multiple versions of the same model
 - a user interface with `MLflow`
-- model audit tracking history (roadmap)
+- model audit history tracking (roadmap)
 - auto-deployed models that can be queried through an API (roadmap)
 
 ### Installing Umlaut
 `pip install umlaut`
+
 ___
 ## MLflow Setup
 [MLflow](https://bit.ly/3eHJsx3) is a powerful machine learning library created by Databricks for data science teams. It offers an extensive API for tracking and running models, but the learning curve can be a deterrent for small teams without dedicated data scientists. Umlaut strips away much of the complexity of MLflow while maintaining the immense value of tracking and running your models in a single location. 

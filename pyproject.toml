@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "umlaut"
-version = "0.3.2"
+version = "0.3.3"
 description = "Umlaut simplifies model deployment and operational analytics for data teams"
 authors = ["DOTONESIX <contact@dotonesix.com>"]
 readme = "README.md"
